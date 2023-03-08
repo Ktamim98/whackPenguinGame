@@ -9,17 +9,17 @@ import SpriteKit
 
 
 class GameScene: SKScene {
-    var slots = [WhackSlot]()
     var gameScore: SKLabelNode!
-    
-    
-    var popupTime = 0.85
+    var finalScore: SKLabelNode!
     
     var score = 0 {
         didSet{
             gameScore.text = "score: \(score)"
         }
     }
+    var slots = [WhackSlot]()
+    var popupTime = 0.85
+    var numRounds = 0
     
     
     override func didMove(to view: SKView) {
@@ -39,6 +39,8 @@ class GameScene: SKScene {
         addChild(gameScore)
         
         
+    
+        
         for i in 0..<5 {creatSlot(at: CGPoint(x: 100 + (i * 170), y: 410))}
         for i in 0..<4 {creatSlot(at: CGPoint(x: 180 + (i * 170), y: 320))}
         for i in 0..<5 {creatSlot(at: CGPoint(x: 100 + (i * 170), y: 230))}
@@ -52,6 +54,31 @@ class GameScene: SKScene {
         
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else {return}
+        let location = touch.location(in: self)
+        let tappedNotes = nodes(at: location)
+        
+        for node in tappedNotes{
+            guard let whackSlot = node.parent?.parent as? WhackSlot else {continue}
+            if !whackSlot.isVisible{continue}
+            if whackSlot.isHit{continue}
+            whackSlot.hit()
+            
+           
+                if node.name == "charFriend" {
+                    score -= 5
+                    
+                    
+                    run(SKAction.playSoundFileNamed("whackBad.caf", waitForCompletion: false))
+                }else if node.name == "charEnemy"{
+                    whackSlot.charNode.xScale = 0.85
+                    whackSlot.charNode.yScale = 0.85
+                    score += 1
+                    
+                    run(SKAction.playSoundFileNamed("whack.caf", waitForCompletion: false))
+                }
+            }
+        
         
     }
     
@@ -65,6 +92,28 @@ class GameScene: SKScene {
     
     
     func creatEnemy(){
+        
+        numRounds += 1
+        if numRounds >= 30{
+            for slot in slots {
+                slot.hide()
+            }
+            let gameOver = SKSpriteNode(imageNamed: "gameOver")
+            gameOver.position = CGPoint(x: 512, y: 384)
+            gameOver.zPosition = 1
+            gameOver.run(SKAction.playSoundFileNamed("GameOver.m4a", waitForCompletion: false))
+            
+            gameScore.isHidden = true
+            finalScore = SKLabelNode(fontNamed: "Chalkduster")
+            finalScore.text = "your score is \(score)"
+            finalScore.position = CGPoint(x: 512, y: 312)
+            finalScore.zPosition = 1
+            addChild(finalScore)
+        
+            addChild(gameOver)
+            return
+        }
+        
         popupTime *= 0.991
         
         slots.shuffle()
@@ -89,5 +138,6 @@ class GameScene: SKScene {
         
         
     }
+    
     
 }
