@@ -1,6 +1,8 @@
 # Whack-a-Penguin Game
 This is a simple implementation of the Whack-a-Penguin game using SpriteKit framework in Swift. The game involves tapping on characters that randomly appear from their slots. The objective is to hit the enemy characters while avoiding hitting the friendly characters.
 
+https://github.com/Ktamim98/whackPenguinGame/assets/124142522/075bb79b-cd40-4128-b6a7-6967a3c82b68
+
 ## Overview
 The game consists of a main scene called GameScene and a slot representation called WhackSlot. The GameScene class manages the overall game flow, including setting up the scene, handling user touches, creating enemy characters, and managing the game score. The WhackSlot class represents individual slots where characters can appear. It handles the configuration, visibility, and interaction of the characters within the slot.
 
